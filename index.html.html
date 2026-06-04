@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COPA Trade - 50 Questions Mega Quiz</title>
+  <style>
+    @import url('https://googleapis.com');
+    body { font-family: 'Poppins', sans-serif; background: #b9b3a9; display: flex; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .container { width: 100%; max-width: 600px; padding: 25px; background-color: #fff; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); border-radius: 15px; margin-top: 20px; }
+    h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #428bca; padding-bottom: 10px; }
+    .question { font-weight: 700; margin-bottom: 20px; font-size: 18px; color: #34495e; }
+    .option { display: block; margin-bottom: 12px; background: #f8f9fa; padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; transition: 0.2s; }
+    .option:hover { background: #e9ecef; border-color: #428bca; }
+    .option input { margin-right: 12px; }
+    .button { padding: 12px 25px; background-color: #428bca; color: #fff; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; font-weight: 500; margin: 5px; }
+    .button:hover { background-color: #3071a9; }
+    .hide { display: none; }
+    .stats { font-weight: bold; color: #428bca; margin-bottom: 10px; }
+    #result { text-align: center; font-size: 20px; font-weight: bold; color: #2c3e50; margin-top: 20px; }
+    .review-item { text-align: left; border-bottom: 1px solid #eee; padding: 15px 0; }
+    .wrong { color: #e74c3c; }
+    .correct { color: #27ae60; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>COPA Mega Quiz (50 Q)</h1>
+    <div id="stats" class="stats">Question: 1 / 50</div>
+    <div id="quiz-box">
+        <div id="quiz"></div>
+        <div style="text-align:center;">
+          <button id="submit" class="button">Submit Answer</button>
+        </div>
+    </div>
+    <div id="result"></div>
+    <div style="text-align:center;">
+      <button id="retry" class="button hide" onclick="location.reload()">Restart Quiz</button>
+	  <button id="showAnswer" class="button hide" style="background-color: #27ae60;">Review Mistakes</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question:'Which is an internal power supply unit of CPU?', options: ['CVT','UPS','SMPS','Stabilizer'], answer: 'SMPS' },
+      { question: 'Which is an example for OS?', options: ['Antivirus', 'Windows', 'MS Office', 'Macromedia'], answer: 'Windows' },
+      { question: 'Where do pinned application stay in Windows OS?', options: ['Desktop', 'Notification Area', 'Title bar', 'Task Bar'], answer: 'Task Bar' },
+      { question: 'What is the extension of Notepad file?', options:['.txt', '.fil', '.dll', '.doc'], answer: '.txt' },
+      { question: 'Which shortcut key center aligns text in MS Word?', options: ['Ctrl + C', 'Ctrl + D', 'Ctrl + E', 'Ctrl + F'], answer: 'Ctrl + E' },
+      { question: 'What is the full form of SSD?', options: ['Solid State Drive', 'Solid Signal Drive', 'Single State Drive', 'Static State Drive'], answer: 'Solid State Drive' },
+      { question: 'Which is the brain of the computer?', options: ['Monitor', 'Keyboard', 'CPU', 'Hard Disk'], answer: 'CPU' },
+      { question: 'What is the maximum number of characters in DOS file name?', options: ['5', '8', '11', '255'], answer: '8' },
+      { question: 'Which DOS command is used to delete a directory?', options: ['DEL', 'RD', 'REMOVE', 'CD'], answer: 'RD' },
+      { question: 'What is the core of Operating System?', options: ['Shell', 'Kernel', 'Command', 'Script'], answer: 'Kernel' },
+      { question: 'Which key is used to refresh the active window?', options: ['F2', 'F5', 'F7', 'F12'], answer: 'F5' },
+      { question: 'What is the first action in case of electric shock?', options: ['Give water', 'Call doctor', 'Switch off power', 'Rub hands'], answer: 'Switch off power' },
+      { question: 'Which button adds instant animation to PPT?', options: ['Add animation', 'Instant animation', 'Animation painter', 'Animation effects'], answer: 'Animation effects' },
+      { question: 'Which function key runs a PowerPoint presentation?', options: ['F1', 'F3', 'F5', 'F9'], answer: 'F5' },
+      { question: 'Which type of device is a printer?', options: ['Input', 'Output', 'Storage', 'Processing'], answer: 'Output' },
+      { question: 'What is the purpose of "Gutter Margin" in MS Word?', options: ['Margin for binding', 'Margin for header', 'Margin for left', 'Margin for footer'], answer: 'Margin for binding' },
+      { question: 'Which starts with "=" sign in MS Excel?', options: ['Data', 'Text', 'Numbers', 'Formulas'], answer: 'Formulas' },
+      { question: 'What is the full form of CSV in Excel?', options: ['Compact Serial Value', 'Comma Separated Values', 'Control Space Value', 'Comma Standard Values'], answer: 'Comma Separated Values' },
+      { question: 'Which tool in Control Panel allows voice command?', options: ['Display', 'Speech Recognition', 'Ease of Access', 'Sound'], answer: 'Speech Recognition' },
+      { question: 'What is the shortcut key to open the Start menu?', options: ['Alt+S', 'Ctrl+Esc', 'Tab+Esc', 'Shift+Esc'], answer: 'Ctrl+Esc' },
+      { question: 'What is the full form of LAN?', options: ['Local Area Network', 'Large Area Network', 'Long Area Network', 'Light Area Network'], answer: 'Local Area Network' },
+      { question: 'Which layer of OSI model is responsible for routing?', options: ['Physical', 'Data Link', 'Network', 'Transport'], answer: 'Network' },
+      { question: 'What is the full form of HTTP?', options: ['Hypertext Transfer Protocol', 'Hypertext Transfer Package', 'Hyperlink Transfer Protocol', 'Hypertext Time Protocol'], answer: 'Hypertext Transfer Protocol' },
+      { question: 'Which symbol is used for ID selector in CSS?', options: ['.', '#', '$', '%'], answer: '#' },
+      { question: 'What is the extension of a JavaScript file?', options: ['.java', '.js', '.script', '.xml'], answer: '.js' },
+      { question: 'Which is a looping statement in JavaScript?', options: ['if', 'switch', 'for', 'break'], answer: 'for' },
+      { question: 'What is the full form of VBA?', options: ['Visual Basic for Applications', 'Visual Basic for Assembly', 'Video Board Array', 'Virtual Basic Array'], answer: 'Visual Basic for Applications' },
+      { question: 'Which key is used to create a new company in Tally?', options: ['F1', 'F3', 'Alt+F3', 'F12'], answer: 'Alt+F3' },
+      { question: 'What is the full form of EDI?', options: ['Electronic Data Interchange', 'Electronic Data Information', 'Electric Data Interface', 'Electronic Digital Interchange'], answer: 'Electronic Data Interchange' },
+      { question: 'Which is an example of E-commerce?', options: ['MS Office', 'Amazon', 'Tally', 'Photoshop'], answer: 'Amazon' },
+      { question: 'What is the full form of Firewall?', options: ['Security Hardware/Software', 'Antivirus', 'Operating System', 'Web Browser'], answer: 'Security Hardware/Software' },
+      { question: 'Which is a Cyber Crime?', options: ['Online Shopping', 'Hacking', 'Sending Email', 'Social Networking'], answer: 'Hacking' },
+      { question: 'What is the full form of IP?', options: ['Internet Protocol', 'Internal Protocol', 'Intranet Protocol', 'Internet Package'], answer: 'Internet Protocol' },
+      { question: 'Which protocol is used to send emails?', options: ['FTP', 'SMTP', 'HTTP', 'IP'], answer: 'SMTP' },
+      { question: 'What is the full form of URL?', options: ['Uniform Resource Locator', 'United Resource Link', 'Uniform Ready Link', 'Universal Radio Locator'], answer: 'Uniform Resource Locator' },
+      { question: 'Which shortcut key saves a document?', options: ['Ctrl+S', 'Ctrl+O', 'Ctrl+N', 'Ctrl+P'], answer: 'Ctrl+S' },
+      { question: 'What is the full form of RAM?', options: ['Read Access Memory', 'Random Access Memory', 'Rapid Access Memory', 'Real Access Memory'], answer: 'Random Access Memory' },
+      { question: 'Which part is the "Brain" of the CPU?', options: ['ALU', 'CU', 'Registers', 'Memory'], answer: 'ALU' },
+      { question: 'What is the shortkey for "Undo"?', options: ['Ctrl+X', 'Ctrl+Y', 'Ctrl+Z', 'Ctrl+U'], answer: 'Ctrl+Z' },
+      { question: 'Which is a search engine?', options: ['Google', 'Chrome', 'Windows', 'Excel'], answer: 'Google' },
+      { question: 'What is the full form of Wi-Fi?', options: ['Wireless Fidelity', 'Wireless Focus', 'Wired Fidelity', 'Wireless Field'], answer: 'Wireless Fidelity' },
+      { question: 'Who is discoverd of python language?', options: ['Gudio van rossoum', 'tim bernes li', 'charles babage', 'adverd jener'], answer: 'Gudio van rossoumss' },
+      { question: 'Which is a volatile memory?', options: ['ROM', 'RAM', 'Hard Disk', 'EPROM'], answer: 'RAM' },
+      { question: 'What is the full form of PDF?', options: ['Printable Document Format', 'Portable Document Format', 'Port Document File', 'Public Document Format'], answer: 'Portable Document Format' },
+      { question: 'Which tool is used to find synonyms in MS Word?', options: ['Spell Check', 'Thesaurus', 'Translate', 'Find'], answer: 'Thesaurus' },
+      { question: 'Which language is used for Android App development?', options: ['Java', 'HTML', 'SQL', 'Pascal'], answer: 'Java' },
+      { question: 'What is the full form of BIOS?', options: ['Basic Input Output System', 'Binary Input Output System', 'Basic Inner Operating System', 'Basic Input Output Software'], answer: 'Basic Input Output System' },
+      { question: 'Which symbol is used for "Not Equal To" in JS?', options: ['=', '!=', '<>', '=='], answer: '!=' },
+      { question: 'Which shortcut is used to Paste text?', options: ['Ctrl+P', 'Ctrl+X', 'Ctrl+V', 'Ctrl+A'], answer: 'Ctrl+V' },
+      { question: 'What is the base of Binary Number System?', options: ['10', '8', '16', '2'], answer: '2' }
+    ];
+
+    let currentQuiz = 0;
+    let score = 0;
+    let userSelections = [];
+
+    const quiz = document.getElementById('quiz');
+    const stats = document.getElementById('stats');
+    const submitBtn = document.getElementById('submit');
+    const resultDiv = document.getElementById('result');
+    const retryBtn = document.getElementById('retry');
+    const showAnswerBtn = document.getElementById('showAnswer');
+
+    function loadQuiz() {
+      const currentData = quizData[currentQuiz];
+      stats.innerText = `Question: ${currentQuiz + 1} / ${quizData.length}`;
+      quiz.innerHTML = `
+        <div class="question">${currentData.question}</div>
+        ${currentData.options.map(opt => `
+          <label class="option">
+            <input type="radio" name="answer" value="${opt}"> ${opt}
+          </label>
+        `).join('')}
+      `;
+    }
+
+    loadQuiz();
+
+    submitBtn.addEventListener('click', () => {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userSelections.push({
+          question: quizData[currentQuiz].question,
+          selected: selected.value,
+          correct: quizData[currentQuiz].answer
+        });
+
+        if (selected.value === quizData[currentQuiz].answer) score++;
+        currentQuiz++;
+
+        if (currentQuiz < quizData.length) {
+          loadQuiz();
+        } else {
+          showFinalResults();
+        }
+      } else {
+        alert("Please select an answer!");
+      }
+    });
+
+    function showFinalResults() {
+      quiz.innerHTML = '';
+      submitBtn.classList.add('hide');
+      stats.classList.add('hide');
+      resultDiv.innerText = `You scored ${score} out of ${quizData.length}!`;
+      retryBtn.classList.remove('hide');
+      showAnswerBtn.classList.remove('hide');
+    }
+
+    showAnswerBtn.addEventListener('click', () => {
+      let reviewHTML = '<h3>Review Mistakes:</h3>';
+      userSelections.forEach((item, index) => {
+        const isCorrect = item.selected === item.correct;
+        reviewHTML += `
+          <div class="review-item">
+            <p><strong>Q${index + 1}: ${item.question}</strong></p>
+            <p class="${isCorrect ? 'correct' : 'wrong'}">Your Answer: ${item.selected} ${isCorrect ? '✓' : '✗'}</p>
+            ${!isCorrect ? `<p class="correct">Correct Answer: ${item.correct}</p>` : ''}
+          </div>
+        `;
+      });
+      quiz.innerHTML = reviewHTML;
+      showAnswerBtn.classList.add('hide');
+    });
+  </script>
+</body>
+</html>
